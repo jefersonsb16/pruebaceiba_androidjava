@@ -1,12 +1,11 @@
 package co.com.ceiba.mobile.pruebadeingreso.view;
 
-import android.app.Activity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 
 import co.com.ceiba.mobile.pruebadeingreso.R;
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +17,5 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
     }
-
 
 }
