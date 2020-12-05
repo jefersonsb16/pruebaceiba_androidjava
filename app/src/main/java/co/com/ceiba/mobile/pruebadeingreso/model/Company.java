@@ -2,7 +2,9 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Company {
+import java.io.Serializable;
+
+public class Company implements Serializable {
     @SerializedName("name")
     private String name;
     @SerializedName("catchPhrase")

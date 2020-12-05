@@ -2,7 +2,9 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Geo {
+import java.io.Serializable;
+
+public class Geo implements Serializable {
     @SerializedName("lat")
     private String lat;
     @SerializedName("lng")

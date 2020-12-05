@@ -2,7 +2,9 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
