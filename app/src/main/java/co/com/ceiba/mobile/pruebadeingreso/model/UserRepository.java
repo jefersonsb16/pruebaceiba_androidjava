@@ -19,14 +19,14 @@ public class UserRepository {
 
     private static UserRepository userRepository;
 
-    public static UserRepository getInstance(Preferences preferences1) {
+    public static UserRepository getInstance() {
         if (userRepository == null) {
-            userRepository = new UserRepository(preferences1);
+            userRepository = new UserRepository();
         }
         return userRepository;
     }
 
-    public UserRepository(Preferences preferences1) {
+    public UserRepository() {
         userServiceInterface = RetrofitClientInstance.getRetrofitInstance().create(UsersServiceInterface.class);
     }
 

@@ -17,7 +17,7 @@ public class UsersViewModel extends ViewModel {
     private Preferences preferences;
 
     public UsersViewModel() {
-        userRepository = UserRepository.getInstance(getPreferences());
+        userRepository = UserRepository.getInstance();
     }
 
     public MutableLiveData<List<User>> getAllUsers() {

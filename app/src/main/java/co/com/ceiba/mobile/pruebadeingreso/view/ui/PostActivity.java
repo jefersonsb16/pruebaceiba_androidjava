@@ -23,6 +23,7 @@ public class PostActivity extends AppCompatActivity {
 
     // Progress
     ProgressDialog progressDialog;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,11 @@ public class PostActivity extends AppCompatActivity {
         // show progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.generic_message_progress));
-        progressDialog.show();
+
+        preferences = new Preferences(this, Preferences.POSTS_GET_LOCAL);
+        if (!preferences.getPostsGetLocal()) {
+            progressDialog.show();
+        }
 
         setupBindings(savedInstanceState);
     }
@@ -54,10 +59,13 @@ public class PostActivity extends AppCompatActivity {
 
     private void setupListUpdate() {
         postsViewModel.setUser(user);
+        postsViewModel.setPreferences(preferences);
 
         postsViewModel.getAllPosts().observe(this, posts -> {
             postsViewModel.setPostsInRecyclerAdapter(posts);
-            progressDialog.dismiss();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
         });
     }
 
