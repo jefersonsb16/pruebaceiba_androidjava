@@ -1,5 +1,8 @@
 package co.com.ceiba.mobile.pruebadeingreso.viewmodel;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -27,7 +30,7 @@ public class UsersViewModel extends ViewModel {
     public void setUsersInRecyclerAdapter(List<User> users) {
         new android.os.Handler().postDelayed(
                 () -> usersAdapter.updateData(users),
-                300);
+                500);
 
     }
 
@@ -42,5 +45,36 @@ public class UsersViewModel extends ViewModel {
 
     public Preferences getPreferences() {
         return preferences;
+    }
+
+    public TextWatcher searchTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                usersAdapter.getFilter().filter(editable.toString());
+            }
+        };
+    }
+
+    public Boolean isListEmpty() {
+        final Boolean[] isEmpty = {false};
+
+        new android.os.Handler().postDelayed(
+                () -> {
+                    isEmpty[0] = usersAdapter.getItemCount() == 0 ? true : false;
+                },
+                300);
+
+        return isEmpty[0];
     }
 }

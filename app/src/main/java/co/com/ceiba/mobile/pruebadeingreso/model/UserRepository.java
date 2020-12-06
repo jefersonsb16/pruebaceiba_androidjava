@@ -56,7 +56,7 @@ public class UserRepository {
     public List<User> getUsersLocal() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<User> results = realm.where(User.class).findAll();
-        return results;
+        return realm.copyFromRealm(results);
     }
 
     public void saveUsersRealm(List<User> list) {

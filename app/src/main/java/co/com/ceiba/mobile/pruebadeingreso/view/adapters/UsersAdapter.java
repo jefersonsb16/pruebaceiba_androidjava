@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,9 +22,10 @@ import co.com.ceiba.mobile.pruebadeingreso.model.User;
 import co.com.ceiba.mobile.pruebadeingreso.view.ui.PostActivity;
 import co.com.ceiba.mobile.pruebadeingreso.viewmodel.UsersViewModel;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
+public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> implements Filterable {
 
-    List<User> listUsers = new ArrayList<>();
+    List<User> listUsers;
+    List<User> filterListUsers = new ArrayList<>();
     Context context;
     private final UsersViewModel usersViewModel;
 
@@ -40,7 +43,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = listUsers.get(position);
+        User user = filterListUsers.get(position);
 
         holder.name.setText(user.getName());
         holder.phone.setText(user.getPhone());
@@ -55,13 +58,51 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return listUsers.size();
+        if (filterListUsers == null) {
+            return 0;
+        }
+        return filterListUsers.size();
     }
 
     public void updateData(List<User> users) {
-        listUsers.clear();
-        listUsers.addAll(users);
+        if (listUsers == null) {
+            listUsers = new ArrayList<>();
+            listUsers.addAll(users);
+        }
+        filterListUsers.clear();
+        filterListUsers.addAll(users);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                List<User> filteredList = new ArrayList<>();
+
+                if (charString.isEmpty()) {
+                    filteredList = listUsers;
+                } else {
+                    for (User user : listUsers) {
+                        if (user.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(user);
+                        }
+                    }
+
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                updateData((ArrayList<User>) filterResults.values);
+            }
+        };
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

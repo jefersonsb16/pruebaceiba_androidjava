@@ -29,7 +29,7 @@ public class PostsViewModel extends ViewModel {
     public void setPostsInRecyclerAdapter(List<Post> posts) {
         new android.os.Handler().postDelayed(
                 () -> postsAdapter.updateData(posts),
-                300);
+                500);
     }
 
     public PostsAdapter getPostsAdapter() {
