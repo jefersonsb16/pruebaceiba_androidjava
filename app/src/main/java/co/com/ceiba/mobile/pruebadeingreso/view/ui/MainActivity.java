@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders;
 import co.com.ceiba.mobile.pruebadeingreso.R;
 import co.com.ceiba.mobile.pruebadeingreso.databinding.ActivityMainBinding;
 import co.com.ceiba.mobile.pruebadeingreso.model.Preferences;
+import co.com.ceiba.mobile.pruebadeingreso.util.Utils;
 import co.com.ceiba.mobile.pruebadeingreso.viewmodel.UsersViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListUpdate() {
         usersViewModel.setPreferences(preferences);
+
+        if (!preferences.getUsersGetLocal() && !Utils.validateNetwork(this)) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            Utils.showDialog(this);
+            return;
+        }
 
         usersViewModel.getAllUsers().observe(this, users -> {
             usersViewModel.setUsersInRecyclerAdapter(users);

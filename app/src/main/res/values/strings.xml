@@ -8,4 +8,5 @@
     <string name="accept">Aceptar</string>
     <string name="list_is_empty">List is empty</string>
     <string name="title_list_posts">Lista de publicaciones</string>
+    <string name="text_ok">Aceptar</string>
 </resources>

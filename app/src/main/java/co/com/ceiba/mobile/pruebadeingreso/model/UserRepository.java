@@ -3,6 +3,7 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.com.ceiba.mobile.pruebadeingreso.network.RetrofitClientInstance;
@@ -44,7 +45,7 @@ public class UserRepository {
 
                 @Override
                 public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                    listUsers.postValue(null);
+                    listUsers.setValue(new ArrayList<>());
                 }
             });
         } else {
