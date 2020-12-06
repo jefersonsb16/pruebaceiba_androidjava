@@ -1,22 +1,64 @@
 package co.com.ceiba.mobile.pruebadeingreso.view.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.gson.Gson;
 
 import co.com.ceiba.mobile.pruebadeingreso.R;
+import co.com.ceiba.mobile.pruebadeingreso.databinding.ActivityPostBinding;
 import co.com.ceiba.mobile.pruebadeingreso.model.Preferences;
 import co.com.ceiba.mobile.pruebadeingreso.model.User;
+import co.com.ceiba.mobile.pruebadeingreso.viewmodel.PostsViewModel;
+import io.realm.Realm;
 
 public class PostActivity extends AppCompatActivity {
 
     private User user;
+    private PostsViewModel postsViewModel;
+
+    // Progress
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        user = (User) getIntent().getSerializableExtra(Preferences.TAG_USER);
+        user = getUser(getIntent().getIntExtra(Preferences.TAG_USER, 1));
+
+        // show progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.generic_message_progress));
+        progressDialog.show();
+
+        setupBindings(savedInstanceState);
+    }
+
+    public User getUser(int userId) {
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(User.class).equalTo("id", userId).findFirst();
+    }
+
+    private void setupBindings(Bundle savedInstanceState) {
+        ActivityPostBinding activityPostBinding = DataBindingUtil.setContentView(this, R.layout.activity_post);
+        postsViewModel = ViewModelProviders.of(this).get(PostsViewModel.class);
+
+        activityPostBinding.setModel(postsViewModel);
+        setupListUpdate();
+    }
+
+    private void setupListUpdate() {
+        postsViewModel.setUser(user);
+
+        postsViewModel.getAllPosts().observe(this, posts -> {
+            postsViewModel.setPostsInRecyclerAdapter(posts);
+            progressDialog.dismiss();
+        });
     }
 
     @Override

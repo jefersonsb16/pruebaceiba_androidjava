@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import co.com.ceiba.mobile.pruebadeingreso.R;
 import co.com.ceiba.mobile.pruebadeingreso.databinding.ActivityMainBinding;
+import co.com.ceiba.mobile.pruebadeingreso.model.Preferences;
 import co.com.ceiba.mobile.pruebadeingreso.viewmodel.UsersViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Progress
     ProgressDialog progressDialog;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,11 @@ public class MainActivity extends AppCompatActivity {
         // show progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.generic_message_progress));
-        progressDialog.show();
+
+        preferences = new Preferences(this, Preferences.USERS_GET_LOCAL);
+        if (!preferences.getUsersGetLocal()) {
+            progressDialog.show();
+        }
 
         setupBindings(savedInstanceState);
     }
@@ -45,9 +51,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListUpdate() {
+        usersViewModel.setPreferences(preferences);
+
         usersViewModel.getAllUsers().observe(this, users -> {
             usersViewModel.setUsersInRecyclerAdapter(users);
-            progressDialog.dismiss();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
         });
     }
 }

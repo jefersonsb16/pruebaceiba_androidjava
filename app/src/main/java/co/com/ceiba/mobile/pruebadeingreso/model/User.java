@@ -2,10 +2,12 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class User implements Serializable {
+public class User extends RealmObject {
     @SerializedName("id")
+    @PrimaryKey
     private int id;
     @SerializedName("name")
     private String name;

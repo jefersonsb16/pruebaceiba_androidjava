@@ -7,6 +7,8 @@ import java.util.List;
 
 import co.com.ceiba.mobile.pruebadeingreso.network.RetrofitClientInstance;
 import co.com.ceiba.mobile.pruebadeingreso.network.UsersServiceInterface;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -17,31 +19,54 @@ public class UserRepository {
 
     private static UserRepository userRepository;
 
-    public static UserRepository getInstance() {
+    public static UserRepository getInstance(Preferences preferences1) {
         if (userRepository == null) {
-            userRepository = new UserRepository();
+            userRepository = new UserRepository(preferences1);
         }
         return userRepository;
     }
 
-    public UserRepository() {
+    public UserRepository(Preferences preferences1) {
         userServiceInterface = RetrofitClientInstance.getRetrofitInstance().create(UsersServiceInterface.class);
     }
 
-    public MutableLiveData<List<User>> getAllUsers() {
-        Call<List<User>> callUsers = userServiceInterface.getAllUsers();
+    public MutableLiveData<List<User>> getAllUsers(Preferences preferences) {
+        if (!preferences.getUsersGetLocal()) {
+            Call<List<User>> callUsers = userServiceInterface.getAllUsers();
 
-        callUsers.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
-                listUsers.setValue(response.body());
-            }
+            callUsers.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                    listUsers.setValue(response.body());
+                    saveUsersRealm(response.body());
+                    preferences.setUsersGetLocal(true);
+                }
 
-            @Override
-            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                listUsers.postValue(null);
+                @Override
+                public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                    listUsers.postValue(null);
+                }
+            });
+        } else {
+            listUsers.setValue(getUsersLocal());
+        }
+        return listUsers;
+    }
+
+    public List<User> getUsersLocal() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<User> results = realm.where(User.class).findAll();
+        return results;
+    }
+
+    public void saveUsersRealm(List<User> list) {
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(realm1 -> {
+            for (User user : list) {
+                realm1.copyToRealmOrUpdate(user);
             }
         });
-        return listUsers;
+        realm.close();
     }
 }

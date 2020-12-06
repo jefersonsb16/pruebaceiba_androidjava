@@ -48,7 +48,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         holder.btnViewPosts.setOnClickListener(view -> {
             Intent intent = new Intent(context, PostActivity.class);
-            intent.putExtra(Preferences.TAG_USER, user);
+            intent.putExtra(Preferences.TAG_USER, user.getId());
             context.startActivity(intent);
         });
     }

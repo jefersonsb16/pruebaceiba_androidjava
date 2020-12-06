@@ -2,9 +2,9 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
 
-public class Geo implements Serializable {
+public class Geo extends RealmObject {
     @SerializedName("lat")
     private String lat;
     @SerializedName("lng")

@@ -2,9 +2,9 @@ package co.com.ceiba.mobile.pruebadeingreso.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
 
-public class Company implements Serializable {
+public class Company extends RealmObject {
     @SerializedName("name")
     private String name;
     @SerializedName("catchPhrase")
